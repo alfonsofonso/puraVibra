@@ -1,20 +1,27 @@
-
+var pistoletazo;
 var so={
     ctx: undefined,
+    maxNotas:20,
     notas: [],//array notas
     mainGain: undefined,
     ombak: 1, //batimiento
     duracion:7,
-    freqBase:216
+    freqBase:216,
+    metronomo:undefined
 }
 
 repite=function(){
     console.log("repite")
 }
 
+tocaNota=function(){
+
+}
+
 creaNota=function(freq,vol,att,rel,dur,omb) {
+   
     freq=freq||so.freqBase;//Hercios
-    vol=vol||.3;// 0 a 1
+    vol=vol||.05;// 0 a 1
     att=att||2;//segs ataque
     rel=rel||3;//segs release
     dur=dur||so.duracion;//segs la duración incluye attaque y release
@@ -46,7 +53,7 @@ creaNota=function(freq,vol,att,rel,dur,omb) {
     nota.omb=omb;
 
     gain.gain.linearRampToValueAtTime(vol,so.ctx.currentTime+att);//ataque
-    setTimeout(()=>{gain.gain.value=vol;
+    pistoletazo=setInterval(()=>{gain.gain.value=vol;
             gain.gain.linearRampToValueAtTime(0,getTime()+rel);//release
             repite(nota)},//repite nota!!!!
         so.ctx.currentTime*1000+dur*1000-rel*1000)//cuando tira release en ms 
@@ -59,16 +66,20 @@ creaNota=function(freq,vol,att,rel,dur,omb) {
 }//devuelve nota y la guarda en so.notas
 
 creaVibra=function(){
-    creaNota();
-}
-
-dale=function(){
-    console.log("dale, inicia sistema");
     so.ctx=new AudioContext();//creo el canvas del audio
     so.mainGain=so.ctx.createGain();//volumen principal
     so.mainGain.gain.value=1;//maximum volume
     so.mainGain.connect(so.ctx.destination);//conecto a la tarjeta de sonido
 
+    for (let i = 0; i < so.maxNotas; i++) {
+        creaNota(so.freqBase*i,.05*Math.random(),so.duracion*Math.random()/2,so.duracion*Math.random()/2,so.duracion,i)
+    }
+ 
+}
+
+dale=function(){
+    console.log("dale, inicia sistema");
+    boton.remove(); 
     creaVibra();
 }
 
@@ -80,3 +91,4 @@ onload=function(){
 getTime=function(){
     return so.ctx.currentTime
 }
+

@@ -1,0 +1,9 @@
+body {
+    margin: 0px;
+    background-color:rgb(38, 38, 38);
+    overflow: hidden;
+}
+
+main{
+    position: absolute;
+}
